@@ -1,5 +1,5 @@
 [package]
-name = "rusthw2"
+name = "toyrsa"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,3 +7,6 @@ edition = "2021"
 
 [dependencies]
 rand = "0.8"
+
+[dependencies.toy_rsa_lib]
+git = "http://github.com/pdx-cs-rust/toy-rsa-lib"
