@@ -1,6 +1,3 @@
-//extern crate rand;
-//extern crate toy_rsa_lib;
-use rand::Rng;
 use toy_rsa_lib::rsa_prime;
 
 /// Fixed RSA encryption exponent.
@@ -22,7 +19,6 @@ pub const EXP: u64 = 65_537;
 /// println!("Generated prime pair: ({}, {})", p, q);
 /// ```
 pub fn genkey() -> (u32, u32) {
-
     loop {
         let p = rsa_prime();
         let q = rsa_prime();
@@ -30,20 +26,16 @@ pub fn genkey() -> (u32, u32) {
         let totient = (p - 1) as u64 * (q - 1) as u64;
 
         match mod_inverse(EXP, totient) {
-            Some(_) => {
-
-            }
+            Some(_) => {}
             // mod inverse doesn't exist, need new prime pair.
             None => {
                 continue;
             }
         }
 
+        let lambda_pq: u64 = (p - 1) as u64 * (q - 1) as u64;
 
-        let lambda_pq:u64 = (p-1) as u64 * (q-1) as u64;
-
-
-        if EXP < lambda_pq.try_into().unwrap() && gcd(EXP, lambda_pq) == 1 {
+        if EXP < lambda_pq && gcd(EXP, lambda_pq) == 1 {
             return (p, q);
         }
     }
@@ -83,9 +75,7 @@ fn gcd(a: u64, b: u64) -> u64 {
 /// println!("Ciphertext: {}", ciphertext);
 /// ```
 pub fn encrypt(key: u64, msg: u32) -> u64 {
-    let encrypted = modexp(msg.try_into().expect("Couldn't convert the message into a u64."), EXP, key);
-
-    encrypted
+    modexp(msg.try_into().unwrap(), EXP, key)
 }
 
 /// Decrypt the ciphertext `msg` using the RSA private `key` and return the resulting plaintext.
@@ -112,9 +102,10 @@ pub fn encrypt(key: u64, msg: u32) -> u64 {
 /// ```
 pub fn decrypt(key: (u32, u32), msg: u64) -> u32 {
     let totient = (key.0 - 1) as u64 * (key.1 - 1) as u64;
-    let d = mod_inverse(EXP, totient).expect("Modular inverse does not exist");
-    let decrypted = modexp(msg, d, key.0 as u64 * key.1 as u64);
-    decrypted.try_into().expect("Couldn't convert decrypted message to u32.")
+    let d = mod_inverse(EXP, totient).unwrap();
+    modexp(msg, d, key.0 as u64 * key.1 as u64)
+        .try_into()
+        .unwrap()
 }
 
 /// Performs modular exponentiation.
@@ -137,28 +128,27 @@ pub fn decrypt(key: (u32, u32), msg: u64) -> u32 {
 ///
 /// - `m` is equal to 0.
 /// - The intermediate values exceed the maximum value for `u64`.
-fn modexp(x:u64,y:u64,m:u64) -> u64 {
-    let mut z:u128 = 1;
-    let mut y:u128 = y as u128;
-    let mut x:u128 = x as u128;
-    let m:u128 = m as u128;
+fn modexp(x: u64, y: u64, m: u64) -> u64 {
+    let mut z: u128 = 1;
+    let mut y: u128 = y as u128;
+    let mut x: u128 = x as u128;
+    let m: u128 = m as u128;
 
     if m == 0 {
         error("m can't be zero");
     }
     assert!(m != 0);
 
-
     while y > 0 {
-        if y % 2 == 1{
-            z = (z*x) % m;
+        if y % 2 == 1 {
+            z = (z * x) % m;
         }
-        y /= 2 ;
-        x = (x*x) % m;
+        y /= 2;
+        x = (x * x) % m;
     }
 
     // Make sure z is small enough to fit as u64.
-    z.try_into().expect("z is larger than u64 max.")
+    z.try_into().unwrap()
 }
 
 /// Calculate the modular multiplicative inverse of `a` modulo `m`.
@@ -185,10 +175,10 @@ fn mod_inverse(a: u64, m: u64) -> Option<u64> {
     }
 
     // Initialize variables for the extended Euclidean algorithm
-    let mut t = 0i64;        // t at step 0
-    let mut newt = 1i64;     // t at step 1
-    let mut r = m;           // r at step 0
-    let mut newr = a;        // r at step 1
+    let mut t = 0i64; // t at step 0
+    let mut newt = 1i64; // t at step 1
+    let mut r = m; // r at step 0
+    let mut newr = a; // r at step 1
 
     // Apply the extended Euclidean algorithm
     while newr != 0 {
@@ -221,23 +211,57 @@ fn mod_inverse(a: u64, m: u64) -> Option<u64> {
 }
 
 // Print a usage error message and exit.
-fn error(e:&str) -> ! {
+fn error(e: &str) -> ! {
     eprintln!("Error: {}", e);
     std::process::exit(1);
 }
 
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rand::Rng;
 
+    // Test for mod inverse
+    #[test]
+    fn test_mod_inverse() {
+        // Test a valid case
+        let a = 3;
+        let m = 11;
+        assert_eq!(mod_inverse(a, m), Some(4));
+
+        // Test when a is not coprime with m
+        let a = 6;
+        let m = 9;
+        assert_eq!(mod_inverse(a, m), None);
+
+        // Test when m is non-positive
+        let a = 7;
+        let m = 0;
+        assert_eq!(mod_inverse(a, m), None);
+    }
+
+    // Test from hw1 for modexp
+    #[test]
+    fn test_modexp() {
+        // Largest prime less than 2**64.
+        // https://primes.utm.edu/lists/2small/0bit.html
+        let bigm = u64::max_value() - 58;
+        assert_eq!(0, modexp(bigm - 2, bigm - 1, 1));
+        assert_eq!(1, modexp(bigm - 2, bigm - 1, bigm));
+        assert_eq!(827419628471527655, modexp(bigm - 2, (1 << 32) + 1, bigm));
+        // https://practice.geeksforgeeks.org/problems/
+        //    modular-exponentiation-for-large-numbers/0
+        assert_eq!(4, modexp(10, 9, 6));
+        assert_eq!(34, modexp(450, 768, 517));
+    }
+
+    // encrypt a random u32 10 times and check the result - tests decrypt, encrypt and genkey
     #[test]
     fn test_random_10_rsa_encryption_decryption() {
-        // Generate an RSA key pair
-        let key = genkey();
-        
         for _ in 0..10 {
+            // Generate an RSA key pair
+            let key = genkey();
+
             // Generate a random u32 number
             let mut rng = rand::thread_rng(); // Initialize a random number generator
             let original_message: u32 = rng.gen();
@@ -245,8 +269,11 @@ mod tests {
             println!("message: {}", original_message);
 
             // Encrypt the random number
-            let encrypted_message = encrypt(( key.0 as u64 * key.1 as u64).try_into().expect("Failed to convert keys into u64."), original_message as u32);
-            
+            let encrypted_message = encrypt(
+                (key.0 as u64 * key.1 as u64).try_into().unwrap(),
+                original_message as u32,
+            );
+
             // Decrypt the encrypted message
             let decrypted_message = decrypt(key, encrypted_message);
 
@@ -254,5 +281,4 @@ mod tests {
             assert_eq!(decrypted_message, original_message as u32);
         }
     }
-
 }
