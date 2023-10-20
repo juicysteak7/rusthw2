@@ -134,6 +134,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "toy_rsa"
+version = "0.1.0"
+dependencies = [
+ "rand",
+ "toy_rsa_lib",
+]
+
+[[package]]
 name = "toy_rsa_lib"
 version = "0.2.1"
 source = "git+http://github.com/pdx-cs-rust/toy-rsa-lib#427333fbc87f1ccfa9a3d10d92b13cb805f57f15"
@@ -141,14 +149,6 @@ dependencies = [
  "glass_pumpkin",
  "num-bigint",
  "rand",
-]
-
-[[package]]
-name = "toyrsa"
-version = "0.1.0"
-dependencies = [
- "rand",
- "toy_rsa_lib",
 ]
 
 [[package]]

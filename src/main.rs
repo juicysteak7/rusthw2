@@ -1,4 +1,4 @@
-use toyrsa::{decrypt, encrypt, genkey};
+use toy_rsa::{decrypt, encrypt, genkey};
 
 fn main() {
     //let message = 4198843561;
