@@ -1,6 +1,8 @@
 # Rust HW2
 CS410 - Rust Programming
+
 Professor Bart Massey
+
 Pedro Gonzalez
 
 # Background
