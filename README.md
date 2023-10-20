@@ -6,11 +6,9 @@ Professor Bart Massey
 Pedro Gonzalez
 
 # Background
-“Public key cryptography” is super-important in the 21st century. The basic idea is an encryption scheme with two “keys”: a “public key” used for encryption that can be shared with anyone, and a corresponding “private key” that is the only way to decrypt. Thus, if Alice wants to send a secret message M to Bob, Alice can
+“Public key cryptography” is super-important in the 21st century. The basic idea is an encryption scheme with two “keys”: a “public key” used for encryption that can be shared with anyone, and a corresponding “private key” that is the only way to decrypt. 
 
-    Look up Bob’s public key Kpub in a public key directory.
-    Encrypt M using Kpub to get a ciphertext C.
-    Send C to Bob in public.
+Thus, if Alice wants to send a secret message M to Bob, Alice canLook up Bob’s public key Kpub in a public key directory. Encrypt M using Kpub to get a ciphertext C. Send C to Bob in public.
 
 Bob can then decrypt C using his corresponding private key Kpriv to get M. No one else has Kpriv, so no one else can decrypt C.
 
