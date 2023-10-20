@@ -39,3 +39,20 @@ Create a library crate called “toy-rsa” (the crate name is in the Cargo.toml
     pub fn decrypt(key: (u32, u32), msg: u64) -> u32
 
 (Note that, as explained in the Background section above, the plaintext msg is just a 32-bit unsigned integer. No strings are involved in this assignment.)
+
+# Project Notes
+I started the logic behind this before I knew how to create a library so most of the development went into the main file, then was transfered once I learned how to make a library.
+
+That being said that added more headache than I would have liked, given this assignment was focused on building a library I should have done that research initially.
+
+Having experience with functional programming in Haskell has transfered well. There is a lot of similarities between them besides the fact they are built for completely different purposes (Haskell is more focused on research/education from what I understand). Not that Haskell isn't practical (I built an tcp based chat server using Haskell!), but I feel like Rust has the potential to become a more prevalent language.
+
+Generating valid keys was a challenge that is worth mentioning. Getting some very large primes is easy, but it took me a while to get the mod inverse function right and to check the keys were valid before returning.
+
+Once you have modexp and modinverse, and genkey() the rest really fell into place.
+
+Rust doc comments... Amazing.
+
+In order to test my code I figured I would generate some random u32 numbers a specific number of times and run it through the encryption/decryption loop and validate the original message matches the decrypted message.
+
+That tested the main functions well enough genkey(), encrypt(), decrypt(). I also wanted to test the non public functions that do the heavy lifting, modexp() and mod_inverse(). I re-used the tests from hw1 for modexp and made a test for mod_inverse.
