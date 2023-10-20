@@ -41,7 +41,7 @@ Create a library crate called “toy-rsa” (the crate name is in the Cargo.toml
 (Note that, as explained in the Background section above, the plaintext msg is just a 32-bit unsigned integer. No strings are involved in this assignment.)
 
 # Project Notes
-I started the logic behind this before I knew how to create a library so most of the development went into the main file, then was transfered once I learned how to make a library.
+I started the logic for this assignment before I knew how to create a library so most of the development went into the main file, then was transfered once I learned how to make a library.
 
 That being said that added more headache than I would have liked, given this assignment was focused on building a library I should have done that research initially.
 
