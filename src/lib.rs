@@ -253,7 +253,7 @@ mod tests {
         //    modular-exponentiation-for-large-numbers/0
         assert_eq!(4, modexp(10, 9, 6));
         assert_eq!(34, modexp(450, 768, 517));
-    }
+    }  
 
     // encrypt a random u32 10 times and check the result - tests decrypt, encrypt and genkey
     #[test]
@@ -270,7 +270,9 @@ mod tests {
 
             // Encrypt the random number
             let encrypted_message = encrypt(
-                (key.0 as u64 * key.1 as u64).try_into().unwrap(),
+                (key.0 as u64 * key.1 as u64)
+                    .try_into()
+                    .unwrap(),
                 original_message as u32,
             );
 
