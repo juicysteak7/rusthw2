@@ -47,7 +47,7 @@ That being said that added more headache than I would have liked, given this ass
 
 Having experience with functional programming in Haskell has transfered well. There is a lot of similarities between them besides the fact they are built for completely different purposes (Haskell is more focused on research/education from what I understand). Not that Haskell isn't practical (I built an tcp based chat server using Haskell!), but I feel like Rust has the potential to become a more prevalent language.
 
-Generating valid keys was a challenge that is worth mentioning. Getting some very large primes is easy, but it took me a while to get the mod inverse function right and to check the keys were valid before returning.
+Generating valid keys was a challenge that is worth mentioning. Getting some very large primes was easy. There was a library built for this assignment that would do this for us, but it took me a while to get the mod inverse function right and to check the keys were valid before returning.
 
 Once you have modexp and modinverse, and genkey() the rest really fell into place.
 
